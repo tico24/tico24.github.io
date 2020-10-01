@@ -11,3 +11,7 @@ Here at ${job} we use Cypress for our test automation and I wanted to integrate 
 - [Sorry Cypress](https://sorry-cypress.dev/) is an open source tool that aims to replace the Dashboard aspect of Cypress and it seems to do a decent job. You need to self-host it and are therefore responsible for its upkeep and the storage of potentially large screenshots/images. If you’re looking at Sorry-Cypress from a pure cost-saving perspective I wouldn’t expect to save much, especially when you factor in the time to install and maintain it. 
 
 - [Kubernetes](https://kubernetes.io) is a container orchestration tool... but hopefully you’ve heard of that one. If you haven’t, I imagine this will be an even more boring article than I expected.
+
+tl;dr: The YAML to deploy Sorry Cypress to Kubernetes can be found here:
+
+Sorry Cypress has already been containerised by the developer and he has included some docker-compose examples. Unfortunately there arent any Kubernetes examples - this will hopefully be addressed soon as I'll be including the examples in this post in a pull request. While docker compose and Kubernetes share the same language in YAML, there is no direct correlation between the two so a small amount of work is needed to translate from one to the other.
