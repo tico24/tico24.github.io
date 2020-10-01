@@ -5,7 +5,10 @@ Here at ${job} we use Cypress for our test automation and I wanted to integrate 
 - [Cypress](https://www.cypress.io/) is a test automation tool for testing websites.
 [Cypress itself is free and open source](https://github.com/cypress-io/cypress). They make their money by offering a tool called Cypress Dashboard where you can view test results, plan parallel testing and store screenshots/videos of failed tests. I absolutely don't have a problem with paying for good software, however I do have a problem sharing screenshots and videos of my failed system, regardless of how secure Cypress might be.
 
-- [Sorry Cypress](https://sorry-cypress.dev/) is an open source tool that aims to replace the Dashboard aspect of Cypress and it seems to do a decent job. You need to self-host it and are therefore responsible for its upkeep and the storage of potentially large screenshots/images. If you’re looking at Sorry-Cypress from a pure cost-saving perspective
+- [Sorry Cypress](https://sorry-cypress.dev/) is an open source tool that aims to replace the Dashboard aspect of Cypress and it seems to do a decent job. You need to self-host it and are therefore responsible for its upkeep and the storage of potentially large screenshots/images. If you’re looking at Sorry-Cypress from a pure cost-saving perspective I wouldn’t expect to save much, especially when you factor in the time to install and maintain it. 
+
+- Kubernetes is a container orchestration tool... but hopefully you’ve heard of that one. If you haven’t, I imagine this will be an even more boring article than I expected. 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNDg2NzI5MDUyLC0xNTE4MTU5NTI4XX0=
+eyJoaXN0b3J5IjpbLTEwOTA1MzA3MjIsLTE1MTgxNTk1MjhdfQ
+==
 -->
