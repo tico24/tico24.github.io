@@ -1,4 +1,4 @@
-he
+Here at ${job} we use Cypress for our test automation and I wanted to integrate it more deeply with our CI/CD stack which sits on top of Kubernetes. 
 
  ***Before we get into the more technical stuff, let's wind things back a little bit:***
 
@@ -7,5 +7,5 @@ he
 
 - [Sorry Cypress](https://sorry-cypress.dev/) is an open source tool that aims to replace the Dashboard aspect of Cypress and it seems to do a decent job. You need to self-host it and are therefore responsible for its upkeep and the storage of potentially large screenshots/images. It 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNDQ5NzIwNDA2XX0=
+eyJoaXN0b3J5IjpbLTE1MTgxNTk1MjhdfQ==
 -->
