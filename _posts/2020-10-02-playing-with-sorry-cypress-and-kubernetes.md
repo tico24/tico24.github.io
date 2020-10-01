@@ -7,8 +7,8 @@ Here at ${job} we use Cypress for our test automation and I wanted to integrate 
 
 - [Sorry Cypress](https://sorry-cypress.dev/) is an open source tool that aims to replace the Dashboard aspect of Cypress and it seems to do a decent job. You need to self-host it and are therefore responsible for its upkeep and the storage of potentially large screenshots/images. If you’re looking at Sorry-Cypress from a pure cost-saving perspective I wouldn’t expect to save much, especially when you factor in the time to install and maintain it. 
 
-- [Kubernetes](https://kubernetes.io) is a container orchestration tool... but hopefully you’ve heard of that one. If you haven’t, I imagine this will be an even more boring article than I expected. 
+- [Kubernetes](https://kubernetes.io) is a container orchestration tool... but hopefully you’ve heard of that one. If you haven’t, I imagine this will be an even more boring article than I expected.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbOTc5OTE1NjcyLC0xMDkwNTMwNzIyLC0xNT
-E4MTU5NTI4XX0=
+eyJoaXN0b3J5IjpbMTg5MjkxOTgzNiwtMTA5MDUzMDcyMiwtMT
+UxODE1OTUyOF19
 -->
