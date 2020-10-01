@@ -25,7 +25,8 @@ footer-links:
   instagram:
   linkedin: timothypcollins
   pinterest:
-  rss: # just type anything here for a working RSS icon
+  rss: timmy 
+  # just type anything here for a working RSS icon
   twitter:
   stackoverflow: # your stackoverflow profile, e.g. "users/50476/bart-kiers"
   youtube: # channel/<your_long_string> or user/<user-name>
@@ -85,5 +86,5 @@ exclude:
   - README.md
   - CNAME
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTY2NzU1MjEwNF19
+eyJoaXN0b3J5IjpbMTQyNTIwMTU5NCwxNjY3NTUyMTA0XX0=
 -->
