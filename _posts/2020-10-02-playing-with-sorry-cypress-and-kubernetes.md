@@ -27,10 +27,10 @@ Sorry Cypress has already been containerised by the developer and he has include
 
 **Caveat time!**
 
-This is some pretty basic yaml. If you're going to host this in production with important data, I'd strongly recommend you embelish it in certain areas. I'll try and point some of these out as I explain the yaml. But here's a global caveat:
+This is some pretty basic yaml. If you're going to host this in production with important data, I'd strongly recommend you embelish it in certain areas. I'll try and point some of these out as I explain the yaml. But here's a couple of caveats to get us started:
 
 - The pod request and limit values are completely arbitrary. Please do your own research to find out values that suit your needs.
-- Readiness probe timings are also completely arbitrary.
+- Readiness probe timings are also completely arbitrary and are almost certainly not the most efficient.
 
 ## The Kubernetes Yaml
 
