@@ -12,11 +12,14 @@ Here at ${job} we use Cypress for our test automation and I wanted to integrate 
 
 - [Kubernetes](https://kubernetes.io) is a container orchestration tool... but hopefully you’ve heard of that one. If you haven’t, I imagine this will be an even more boring article than I expected.
 
-# **_tl;dr: [The YAML to deploy Sorry Cypress to Kubernetes can be found here](https://raw.githubusercontent.com/tico24/sorry-cypress/master/kubernetes-full.yml)_**
+---
+**_tl;dr: [The YAML to deploy Sorry Cypress to Kubernetes can be found here](https://raw.githubusercontent.com/tico24/sorry-cypress/master/kubernetes-full.yml)_**
+
+---
 
 ## Hosting Sorry Cypress on Kubernetes
 
-Sorry Cypress has already been containerised by the developer and he has included some docker-compose examples. Unfortunately there arent any Kubernetes examples - this will hopefully be addressed soon as I'll be including the examples in this post in a pull request. While docker compose and Kubernetes share the same language in YAML, there is no direct correlation between the two so a small amount of work is needed to translate from one to the other.
+Sorry Cypress has already been containerised by the developer and he has included some docker-compose examples. Unfortunately there arent any Kubernetes examples - this will hopefully be addressed soon as I'll be including the examples in this post in a [pull request](https://github.com/sorry-cypress/sorry-cypress/pull/151). While docker compose and Kubernetes share the same language in YAML, there is no direct correlation between the two so a small amount of work is needed to translate from one to the other.
 
 **You will need:**
 - A Kubernetes cluster
