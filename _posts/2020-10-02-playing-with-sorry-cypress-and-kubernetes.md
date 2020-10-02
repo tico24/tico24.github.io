@@ -23,7 +23,7 @@ Sorry Cypress has already been containerised by the developer and he has include
 
 **You will need:**
 - A Kubernetes cluster
-- Access to S3 (or equivalent, eg [minio](https://min.io/) or [Backblaze b2](https://www.backblaze.com/b2/cloud-storage.html)
+- Access to S3 (or equivalent, eg [minio](https://min.io/) or [Backblaze b2](https://www.backblaze.com/b2/cloud-storage.html))
 
 **Caveat time!**
 
