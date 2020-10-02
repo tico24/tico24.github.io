@@ -357,4 +357,8 @@ You then insert these into your yaml:
           AWS_SECRET_ACCESS_KEY: VGhpcyBpcyB0aGUgY3J1bWJob2xl
           AWS_ACCESS_KEY_ID: Tm8gcGVla2luZw==
 
-And that's it. Once your DNS has propagated you should be able to visit your dashboard URL. Point your runner at your director URL and it'll use Sorry Cypress instead of the hosted offering.
+And that's it. 
+
+To deploy, you can simply put it all in one .yaml file ([as I have done here]((https://raw.githubusercontent.com/tico24/sorry-cypress/master/kubernetes-full.yml)) and use kubectl to apply it.
+
+Once your DNS has propagated you should be able to visit your dashboard URL. Point your runner at your director URL and it'll use Sorry Cypress instead of the hosted offering.
