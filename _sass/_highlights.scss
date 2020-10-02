@@ -7,6 +7,10 @@ pre.highlight {
   overflow: scroll;
 }
 
+::selection {
+  background: #a23737;
+}
+
 code {
   font-family:'Bitstream Vera Sans Mono','Courier', monospace;
 }
