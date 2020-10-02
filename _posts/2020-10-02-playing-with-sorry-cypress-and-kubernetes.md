@@ -104,6 +104,7 @@ I'm using a slightly older mongo version than is available as this aligns with t
                     claimName: mongo-storage-claim
 
 3. The API deployment:
+Note that the API deployment has no readiness probe. I didn't have a lot of time, but I couldn't get anything to respond positively.
 
           apiVersion: apps/v1
           kind: Deployment
@@ -126,15 +127,11 @@ I'm using a slightly older mongo version than is available as this aligns with t
                     value: sorry-cypress
                   - name: MONGODB_URI
                     value: mongodb://mongo-service:27017
-                  image: agoldis/sorry-cypress-api:cypress-v5
+                  image: agoldis/sorry-cypress-api:latest
                   imagePullPolicy: "Always"
                   name: api
                   ports:
                   - containerPort: 4000
-                  readinessProbe:
-                    httpGet:
-                      path: /
-                      port: 4000
                     periodSeconds: 10
                     timeoutSeconds: 5
                     successThreshold: 2
@@ -195,7 +192,7 @@ You'll need to enter the dashboard URL and the S3 details you're expecting.
                       secretKeyRef:
                         name: cypress-s3-secrets
                         key: AWS_SECRET_ACCESS_KEY
-                image: agoldis/sorry-cypress-director:cypress-v5
+                image: agoldis/sorry-cypress-director:latest
                 imagePullPolicy: "Always"
                 name: director
                 ports:
@@ -241,7 +238,7 @@ You just need to pop your API url under GRAPH_SCHEMA_URL.
               - env:
                 - name: GRAPHQL_SCHEMA_URL
                   value: [YOUR-API-URL-HERE]
-                image: agoldis/sorry-cypress-dashboard:cypress-v5
+                image: agoldis/sorry-cypress-dashboard:latest
                 imagePullPolicy: "Always"
                 name: dashboard
                 ports:
