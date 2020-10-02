@@ -177,7 +177,7 @@ Here's something that resembles our leader job. It checks out the tests from git
     }
 
 
-    Finally, our workers get instucted by Sorry Cypress which tests to run, and then crack on with it. Our worker job looks a little like this:
+Finally, our workers get instucted by Sorry Cypress which tests to run, and then crack on with it. Our worker job looks a little like this:
 
     pipeline {
         agent{
