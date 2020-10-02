@@ -85,7 +85,7 @@ The resulting Jenkins pipeline to do this looks a little like this:
 
 We now have a container that has all our dependencies baked into it, as well as the path to our Sorry Cypress installation. We can now look to implement CI.
 
-Sorry Cypress allows us to parallelise our jobs, having multiple exectors share the load of executing the tests, which results in a faster feedback loop to our development team, so we want to capitalise on that. The fly in the ointment is that Jenkins wants to run any containers for a given job in the same pod.... this means they have to run on the same physical (or virtual) server, which would easily become a constraint.
+Sorry Cypress allows us to parallelise our jobs, having multiple executors share the load of executing the tests, which results in a faster feedback loop to our development team, so we want to capitalise on that. The fly in the ointment is that Jenkins wants to run any containers for a given job in the same pod.... this means they have to run on the same physical (or virtual) server, which would easily become a constraint.
 
 To overcome this, we use a 'leader' job to kick off a number of parallel 'worker' jobs that each run in their own pod. This way we can spread the load out across servers and we aren't resource constrained. The downside is it takes a little more work to set up, and to get your head around.
 
@@ -177,7 +177,7 @@ Here's something that resembles our leader job. It checks out the tests from git
     }
 
 
-Finally, our workers get instucted by Sorry Cypress which tests to run, and then crack on with it. Our worker job looks a little like this:
+Finally, our workers get instructed by Sorry Cypress which tests to run, and then crack on with it. Our worker job looks a little like this:
 
     pipeline {
         agent{
