@@ -209,13 +209,6 @@ Finally, our workers get instructed by Sorry Cypress which tests to run, and the
             string defaultValue: '', description: 'The test environment IP you wish to run the automation system on', name: 'test_env_IP', trim: true
             string defaultValue: '', description: 'The CI ID to pass to Sorry Cypress', name: 'CI_ID'
             string defaultValue: '', description: 'workernum', name: 'workernum'
-            booleanParam defaultValue: false, description: 'Check to record the run to the Cypress Dashboard', name: 'record_run'
-        }
-
-        environment {
-              JENKINS_VAULT_TOKEN = credentials('jenkins-token')
-              APPROLE_NAME        = "cypress-automation"
-              APPROLE_ID          = "89ebc42c-8b0f-677e-ac65-f1ec1b87f5b6"
         }
 
         stages {
