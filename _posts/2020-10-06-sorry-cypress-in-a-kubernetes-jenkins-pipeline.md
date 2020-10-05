@@ -190,7 +190,7 @@ Finally, our workers get instructed by Sorry Cypress which tests to run, and the
     spec:
       containers:
       - name: cypress-internal
-        image: docker.sendilab.net/cypress/cypress
+        image: [our-repo/container:latest]
         imagePullPolicy: Always
         command: ['cat']
         tty: true
