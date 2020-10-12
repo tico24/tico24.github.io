@@ -11,7 +11,9 @@ We have Prometheus and Grafana already set up in our cluster, so all I had to do
 ## If you don't already have Prometheus and Grafana installed, a very brief interlude:
 
 - I installed Prometheus using [this particular helm chart](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack). There are a lot of 'competing' charts out there and some seem to have been deprecated, so it was a bit of a minefield to try and source one that I liked.
+
 - The prometheus helm does come with a Grafana instance, but I didn't like certain aspects of inflexibility that came with it. So [I installed Grafana](https://github.com/grafana/helm-charts/tree/main/charts/grafana) in its own namespace using this helm and configured it to use Prometheus as a data source.
+
 ---
 
 Prometheus uses a pull method of collecting data. It scrapes data from defined service endpoints (or pods if you set it up to do so). This isn't any use to us. At its slowest, our cron job takes 3 seconds to spin up and execute, and then it destroys itself... this would mean we'd have to turn the Prometheus scrape interval up to 11 to be able to catch the pod while its running, and even then we can't guarantee that Prometheus will collect the generated data in time. Luckily, I'm not the first to encounter this problem.
