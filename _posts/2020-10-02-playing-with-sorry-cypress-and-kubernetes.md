@@ -1,9 +1,9 @@
 ---
 published: true
 ---
-_Updated 12 October 2020_
+Here at ${job} we use Cypress for our test automation and I wanted to integrate it more deeply with our CI/CD stack which sits on top of Kubernetes.
 
-Here at ${job} we use Cypress for our test automation and I wanted to integrate it more deeply with our CI/CD stack which sits on top of Kubernetes. 
+_Updated 12 October 2020_
 
 ## **Before we get into the more technical stuff, let's wind things back a little bit:**
 
