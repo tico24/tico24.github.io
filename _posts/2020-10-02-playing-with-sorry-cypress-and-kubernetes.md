@@ -1,6 +1,8 @@
 ---
 published: true
 ---
+_Updated 12 October 2020_
+
 Here at ${job} we use Cypress for our test automation and I wanted to integrate it more deeply with our CI/CD stack which sits on top of Kubernetes. 
 
 ## **Before we get into the more technical stuff, let's wind things back a little bit:**
@@ -79,13 +81,16 @@ I'm using a slightly older mongo version than is available as this aligns with t
                 ports:
                 - containerPort: 27017
                 readinessProbe:
-                  httpGet:
-                    path: /
-                    port: 27017
+                  exec:
+                    command:
+                    - mongo
+                    - --eval
+                    - db.adminCommand('ping')
+                  failureThreshold: 6
+                  initialDelaySeconds: 60
                   periodSeconds: 10
+                  successThreshold: 1
                   timeoutSeconds: 5
-                  successThreshold: 2
-                  failureThreshold: 5
                 resources:
                   requests:
                     memory: "128M"
