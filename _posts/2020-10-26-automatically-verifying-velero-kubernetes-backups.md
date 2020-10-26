@@ -44,8 +44,8 @@ Then I wrote a simple Jenkins pipline to perform the following steps:
 
 ** I test this by using kubectl to connect to the restored pod, and then perform a curl against the service to get the value. This has the benefit of not just testing that the PV restored successfully, but also the pod and service restored well enough that the webserver is accessible.
 
-![Velero-Restore-Pod.svg]({{site.baseurl}}/_drafts/Velero-Restore-Pod.svg)
+![Velero-Restore-Pod.svg]({{site.baseurl}}/images/Velero-Restore-Pod.svg)
 
 The jenkins job is then set to run regularly. Velero can produce Prometheus metrics if you set it up to do so, so restores (successes and failures) are recorded on a Grafana dashboard. If restores fail, a Prometheus alert is triggered and I can resolve the problem before I really need the backup.
 
-![grafana-restores.png]({{site.baseurl}}/_drafts/grafana-restores.png)
+![grafana-restores.png]({{site.baseurl}}/images/grafana-restores.png)
