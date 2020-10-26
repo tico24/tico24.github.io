@@ -27,17 +27,19 @@ For testing purposes, I would recommend you set up the ingress (or be prepared t
 
 After installing the Pushgateway, we will need to tell Prometheus that it exists. This is as simple as adding an additionalServiceMonitor to the Prometheus helm chart and performing an update. Here's a small example with a bit of annotation:
 
-    additionalServiceMonitors:
-      - name: pushgateway  # Generic name so you can identify it.
-        selector:
-          matchLabels:
-            app: prometheus-pushgateway  # Match with any service where the label key is 'app' and the value is 'prometheus-pushgateway'.
-        namespaceSelector:
-          matchNames:
-            - prometheus # Only match with services in this namespace.
-        endpoints:
-          - port: http # Port name in the service.
-            interval: 10s # How often to scrape.
+``` yml
+additionalServiceMonitors:
+  - name: pushgateway  # Generic name so you can identify it.
+    selector:
+      matchLabels:
+        app: prometheus-pushgateway  # Match with any service where the label key is 'app' and the value is 'prometheus-pushgateway'.
+    namespaceSelector:
+      matchNames:
+        - prometheus # Only match with services in this namespace.
+    endpoints:
+      - port: http # Port name in the service.
+        interval: 10s # How often to scrape.
+```
 
 ## The Python bit
 We need to tweak our cron job slightly so it knows how to push the data to the push gateway. I'm not a Pythonmonger, so this bit probably took me longer than it should have done.
@@ -46,17 +48,21 @@ The official docs are [here](https://github.com/prometheus/client_python), but I
 
 The key takeaway was that I needed to use a Gauge in my instance as my values may go up or down. So I just had to add a couple of import lines:
 
-    import prometheus_client as prom
-    from prometheus_client import CollectorRegistry, Gauge, push_to_gateway
+``` terminal
+import prometheus_client as prom
+from prometheus_client import CollectorRegistry, Gauge, push_to_gateway
+```
     
 ... and then push the values (taken from a dictionary) to the gateway:
 
-      # Push to Prometheus Gateway
-      if __name__ == '__main__':
-        registry = CollectorRegistry()
-        g = Gauge('identifying_name_of_my_metric', 'Metric description to help humans', registry=registry)
-        g.set(a_dictionary["metric"])
-        push_to_gateway('servicename.namespace.svc.cluster.local:9091', job='Demo-job', registry=registry)
+``` terminal
+# Push to Prometheus Gateway
+if __name__ == '__main__':
+  registry = CollectorRegistry()
+  g = Gauge('identifying_name_of_my_metric', 'Metric description to help humans', registry=registry)
+  g.set(a_dictionary["metric"])
+  push_to_gateway('servicename.namespace.svc.cluster.local:9091', job='Demo-job', registry=registry)
+```
       
 'servicename.namespace.svc.cluster.local' is 'the name of the pushgateway service'.'the name of the namespace the service is in'.svc.cluster.local. This will use Kubernetes' internal DNS to route to the correct service, so nothing needs to be exposed.
 
@@ -67,60 +73,64 @@ I envisage that this won't be our only Python cron job, so I wanted to make some
 
 So the python container is extremely lightweight, just python plus dependencies. Here's the dockerfile:
 
-    FROM python:3-alpine
-    RUN pip install requests prometheus_client
+``` dockerfile
+FROM python:3-alpine
+RUN pip install requests prometheus_client
+``` 
 
 From there, my kubernetes yaml looks a little like this:
 
-    apiVersion: batch/v1beta1
-    kind: CronJob
-    metadata:
-      name: demo-cronjob
+``` yml
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: demo-cronjob
+spec:
+  concurrencyPolicy: Forbid
+  jobTemplate:
     spec:
-      concurrencyPolicy: Forbid
-      jobTemplate:
+      template:
+        metadata:
+          labels:
+            app: demo-cronjob
         spec:
-          template:
-            metadata:
-              labels:
-                app: demo-cronjob
-            spec:
-              containers:
-              - name: demo-cronjob
-                image: location-of-our-container
-                imagePullPolicy: Always
-                command:
-                - python
-                args:
-                - /tmp/demo.py
-                volumeMounts:
-                  - name: scripts-mount
-                    mountPath: /tmp
-              volumes:
-                - name: scripts-mount
-                  configMap:
-                    name: scripts-mount
-              restartPolicy: Never
-      schedule: '*/5 * * * *'
-      successfulJobsHistoryLimit: 3
-    ---
-    apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      name: scripts-mount
-    data:
-      demo.py: |-
-        import requests
-        import prometheus_client as prom
-        from prometheus_client import CollectorRegistry, Gauge, push_to_gateway
-        
+          containers:
+          - name: demo-cronjob
+            image: location-of-our-container
+            imagePullPolicy: Always
+            command:
+            - python
+            args:
+            - /tmp/demo.py
+            volumeMounts:
+              - name: scripts-mount
+                mountPath: /tmp
+          volumes:
+            - name: scripts-mount
+              configMap:
+                name: scripts-mount
+          restartPolicy: Never
+  schedule: '*/5 * * * *'
+  successfulJobsHistoryLimit: 3
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: scripts-mount
+data:
+  demo.py: |-
+    import requests
+    import prometheus_client as prom
+    from prometheus_client import CollectorRegistry, Gauge, push_to_gateway
+```
     	...
-        
-        # Push to Prometheus Gateway
-        if __name__ == '__main__':
-          registry = CollectorRegistry()
-          g = Gauge('identifying_name_of_my_metric', 'Metric description to help humans', registry=registry)
-          g.set(a_dictionary["metric"])
-          push_to_gateway('servicename.namespace.svc.cluster.local:9091', job='Demo-job', registry=registry)
+``` terminal
+# Push to Prometheus Gateway
+if __name__ == '__main__':
+  registry = CollectorRegistry()
+  g = Gauge('identifying_name_of_my_metric', 'Metric description to help humans', registry=registry)
+  g.set(a_dictionary["metric"])
+  push_to_gateway('servicename.namespace.svc.cluster.local:9091', job='Demo-job', registry=registry)
+```
           
 This allows me to add additional python scripts easily by appending the configmap and just adding additional cron jobs as required.
