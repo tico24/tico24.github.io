@@ -12,9 +12,8 @@ I then manually wrote a small index.html file inside the volume, containing a kn
 kubectl -n backup-canary get pods -l=app=backup-canary -o jsonpath='{.items[-1:].metadata.name}'
 
 // Write to the index.html file
-kubectl exec -n backup-canary -it ${podName} -- bash -c \"echo hello-world > /usr/share/nginx/html/index.html\" y
+kubectl exec -n backup-canary -it ${podName} -- bash -c "echo hello-world > /usr/share/nginx/html/index.html" y
 ```
-
 If we were to put an ingress on the service (or did magic kubectl port forwarding), we would see a web page with "hello-world" emblazened on it.
 
 I then allowed Velero to back this all up.
