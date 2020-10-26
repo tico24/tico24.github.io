@@ -1,5 +1,5 @@
 ---
-published: false
+published: true
 ---
 ## So you've gone and set up Kubernetes backups...
 
