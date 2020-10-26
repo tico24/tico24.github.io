@@ -25,63 +25,64 @@ We use a tool called [Kaniko](https://github.com/GoogleContainerTools/kaniko) wh
 
 The resulting Jenkins pipeline to do this looks a little like this:
 
-    pipeline {
-        agent {
-            kubernetes {
-                label 'kaniko'
-                yaml """
-    kind: Pod
-    metadata:
-      name: kaniko
-    spec:
-      containers:
-      - name: kaniko
-        image: gcr.io/kaniko-project/executor:debug
-        imagePullPolicy: Always
-        command:
-        - /busybox/cat
-        tty: true
-        volumeMounts:
-          - name: jenkins-docker-cfg
-            mountPath: /kaniko/.docker
-      volumes:
-      - name: jenkins-docker-cfg
-        projected:
-          sources:
-          - secret:
-              name: registry-credentials
-              items:
-                - key: .dockerconfigjson
-                  path: config.json
-    """
+``` groovy
+pipeline {
+    agent {
+        kubernetes {
+            label 'kaniko'
+            yaml """
+kind: Pod
+metadata:
+    name: kaniko
+spec:
+    containers:
+    - name: kaniko
+    image: gcr.io/kaniko-project/executor:debug
+    imagePullPolicy: Always
+    command:
+    - /busybox/cat
+    tty: true
+    volumeMounts:
+        - name: jenkins-docker-cfg
+        mountPath: /kaniko/.docker
+    volumes:
+    - name: jenkins-docker-cfg
+    projected:
+        sources:
+        - secret:
+            name: registry-credentials
+            items:
+            - key: .dockerconfigjson
+                path: config.json
+"""
+        }
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'master',
+                credentialsId: '[jenkins credentials to access git]',
+                url: '[our git repo here].git'
             }
         }
-        stages {
-            stage('Checkout') {
-                steps {
-                    git branch: 'master',
-                    credentialsId: '[jenkins credentials to access git]',
-                    url: '[our git repo here].git'
-                }
+        stage('Make and push Image') {
+            environment {
+                PATH        = "/busybox:$PATH"
+                REGISTRY    = '[out internal docker repo]'
+                REPOSITORY  = 'cypress'
+                IMAGE       = 'cypress'
             }
-            stage('Make and push Image') {
-                environment {
-                    PATH        = "/busybox:$PATH"
-                    REGISTRY    = '[out internal docker repo]'
-                    REPOSITORY  = 'cypress'
-                    IMAGE       = 'cypress'
-                }
-                steps {
-                    container(name: 'kaniko', shell: '/busybox/sh') {
-                        sh '''#!/busybox/sh
-                        /kaniko/executor -f `pwd`/Dockerfile -c `pwd` --cache=true --destination=${REGISTRY}/${REPOSITORY}/${IMAGE}
-                        '''
-                    }
+            steps {
+                container(name: 'kaniko', shell: '/busybox/sh') {
+                    sh '''#!/busybox/sh
+                    /kaniko/executor -f `pwd`/Dockerfile -c `pwd` --cache=true --destination=${REGISTRY}/${REPOSITORY}/${IMAGE}
+                    '''
                 }
             }
         }
     }
-
+}
+```
 
 We now have a container that has all our dependencies baked into it, as well as the path to our Sorry Cypress installation. We can now look to implement CI.
 
@@ -91,150 +92,153 @@ To overcome this, we use a 'leader' job to kick off a number of parallel 'worker
 
 Here's something that resembles our leader job. It checks out the tests from git, does some database prep (not shown because 🤫) and then in parallel triggers additional jenkins jobs.
 
-    def CI_ID = "cy-k8s-${BUILD_ID}"
+``` groovy
+def CI_ID = "cy-k8s-${BUILD_ID}"
 
-    pipeline {
-        agent{
-            kubernetes {
-                label 'cypress-internal'
-                yaml """
-    kind: Pod
-    metadata:
-      name: cypress-internal
-    spec:
-      containers:
-      - name: cypress-internal
-        image: [our-repo/container:latest]
-        imagePullPolicy: Always
-        command: ['cat']
-        tty: true
-        workingDir: /home/jenkins/agent/
-        resources:
-          requests:
-            memory: "128M"
-            cpu: 0.2
-          limits:
-            memory: "1Gi"
-            cpu: 1
-    """
+pipeline {
+    agent{
+        kubernetes {
+            label 'cypress-internal'
+            yaml """
+kind: Pod
+metadata:
+    name: cypress-internal
+spec:
+    containers:
+    - name: cypress-internal
+    image: [our-repo/container:latest]
+    imagePullPolicy: Always
+    command: ['cat']
+    tty: true
+    workingDir: /home/jenkins/agent/
+    resources:
+        requests:
+        memory: "128M"
+        cpu: 0.2
+        limits:
+        memory: "1Gi"
+        cpu: 1
+"""
+        }
+    }
+    parameters {
+        string defaultValue: '999.999.999.999', description: 'The test environment IP you wish to run the automation system on', name: 'test_env_IP', trim: true
+    }
+
+    stages {
+        stage('SCM Checkout') {
+            steps {
+                git branch: 'master',
+                credentialsId: '[jenkins credentials to access git]',
+                url: '[our git repo here].git'
             }
-        }
-        parameters {
-            string defaultValue: '999.999.999.999', description: 'The test environment IP you wish to run the automation system on', name: 'test_env_IP', trim: true
-        }
+        }    
 
-        stages {
-            stage('SCM Checkout') {
-                steps {
-                    git branch: 'master',
-                    credentialsId: '[jenkins credentials to access git]',
-                    url: '[our git repo here].git'
+        stage('Testify!') {
+            parallel{
+                stage('Invoke Worker 1') {
+                    steps{
+                        echo "Build ID is ${CI_ID}"
+                        build job: 'cypress-workers', wait: true, propagate: true, parameters: [
+                            string(name: 'CI_ID',  value: "${CI_ID}"),
+                            string(name: 'test_env_IP',  value: "${test_env_IP}"),
+                            string(name: 'workernum', value: "1"),
+                        ]
+                    }
                 }
-            }    
-
-            stage('Testify!') {
-                parallel{
-                    stage('Invoke Worker 1') {
-                        steps{
-                            echo "Build ID is ${CI_ID}"
-                            build job: 'cypress-workers', wait: true, propagate: true, parameters: [
-                                string(name: 'CI_ID',  value: "${CI_ID}"),
-                                string(name: 'test_env_IP',  value: "${test_env_IP}"),
-                                string(name: 'workernum', value: "1"),
-                            ]
-                        }
+                stage('Invoke Worker 2') {
+                    steps{
+                        build job: 'cypress-workers', wait: true, propagate: true, parameters: [
+                            string(name: 'CI_ID',  value: "${CI_ID}"),
+                            string(name: 'test_env_IP',  value: "${test_env_IP}"),
+                            string(name: 'workernum', value: "2"),
+                        ]
                     }
-                    stage('Invoke Worker 2') {
-                        steps{
-                            build job: 'cypress-workers', wait: true, propagate: true, parameters: [
-                                string(name: 'CI_ID',  value: "${CI_ID}"),
-                                string(name: 'test_env_IP',  value: "${test_env_IP}"),
-                                string(name: 'workernum', value: "2"),
-                            ]
-                        }
+                }
+                stage('Invoke Worker 3') {
+                    steps{
+                        build job: 'cypress-workers', wait: true, propagate: true, parameters: [
+                            string(name: 'CI_ID',  value: "${CI_ID}"),
+                            string(name: 'test_env_IP',  value: "${test_env_IP}"),
+                            string(name: 'workernum', value: "3"),
+                        ]
                     }
-                    stage('Invoke Worker 3') {
-                        steps{
-                            build job: 'cypress-workers', wait: true, propagate: true, parameters: [
-                                string(name: 'CI_ID',  value: "${CI_ID}"),
-                                string(name: 'test_env_IP',  value: "${test_env_IP}"),
-                                string(name: 'workernum', value: "3"),
-                            ]
-                        }
-                    }
-                    stage('Invoke Worker 4') {
-                        steps{
-                            build job: 'cypress-workers', wait: true, propagate: true, parameters: [
-                                string(name: 'CI_ID',  value: "${CI_ID}"),
-                                string(name: 'test_env_IP',  value: "${test_env_IP}"),
-                                string(name: 'workernum', value: "4"),
-                            ]
-                        }
+                }
+                stage('Invoke Worker 4') {
+                    steps{
+                        build job: 'cypress-workers', wait: true, propagate: true, parameters: [
+                            string(name: 'CI_ID',  value: "${CI_ID}"),
+                            string(name: 'test_env_IP',  value: "${test_env_IP}"),
+                            string(name: 'workernum', value: "4"),
+                        ]
                     }
                 }
             }
         }
     }
-
+}
+```
 
 Finally, our workers get instructed by Sorry Cypress which tests to run, and then crack on with it. Our worker job looks a little like this:
 
-    pipeline {
-        agent{
-            kubernetes {
-                label 'cypress-internal'
-                yaml """
-    kind: Pod
-    metadata:
-      name: cypress-internal
-    spec:
-      containers:
-      - name: cypress-internal
-        image: [our-repo/container:latest]
-        imagePullPolicy: Always
-        command: ['cat']
-        tty: true
-        workingDir: /home/jenkins/agent/
-        resources:
-          requests:
-            memory: "2Gi"
-            cpu: 2.5
-          limits:
-            memory: "4Gi"
-            cpu: 3
-    """
-            }
+``` groovy
+pipeline {
+    agent{
+        kubernetes {
+            label 'cypress-internal'
+            yaml """
+kind: Pod
+metadata:
+    name: cypress-internal
+spec:
+    containers:
+    - name: cypress-internal
+    image: [our-repo/container:latest]
+    imagePullPolicy: Always
+    command: ['cat']
+    tty: true
+    workingDir: /home/jenkins/agent/
+    resources:
+        requests:
+        memory: "2Gi"
+        cpu: 2.5
+        limits:
+        memory: "4Gi"
+        cpu: 3
+"""
         }
-        parameters {
-            string defaultValue: '', description: 'The test environment IP you wish to run the automation system on', name: 'test_env_IP', trim: true
-            string defaultValue: '', description: 'The CI ID to pass to Sorry Cypress', name: 'CI_ID'
-            string defaultValue: '', description: 'workernum', name: 'workernum'
-        }
+    }
+    parameters {
+        string defaultValue: '', description: 'The test environment IP you wish to run the automation system on', name: 'test_env_IP', trim: true
+        string defaultValue: '', description: 'The CI ID to pass to Sorry Cypress', name: 'CI_ID'
+        string defaultValue: '', description: 'workernum', name: 'workernum'
+    }
 
-        stages {
-            stage('SCM Checkout') {
-                steps {
-                    git branch: 'master',
-                    credentialsId: '[jenkins credentials to access git]',
-                    url: '[our git repo here].git'
-                }
+    stages {
+        stage('SCM Checkout') {
+            steps {
+                git branch: 'master',
+                credentialsId: '[jenkins credentials to access git]',
+                url: '[our git repo here].git'
             }
         }
-            stage('Testify!') {
-                environment {
-                CYPRESS_RECORD_KEY = "record-key"
-                }
-                steps{
-                    container('cypress-internal') {
-                        script{
-                          sh 'npx cypress@5.3.0 run -e worker=Worker${workernum},IP=${test_env_IP},tag=k8sJenkins --browser chrome --headless --parallel --record --ci-build-id ${CI_ID} --config testFiles=**${features_to_test}/*.feature'
-                        }
+    }
+        stage('Testify!') {
+            environment {
+            CYPRESS_RECORD_KEY = "record-key"
+            }
+            steps{
+                container('cypress-internal') {
+                    script{
+                        sh 'npx cypress@5.3.0 run -e worker=Worker${workernum},IP=${test_env_IP},tag=k8sJenkins --browser chrome --headless --parallel --record --ci-build-id ${CI_ID} --config testFiles=**${features_to_test}/*.feature'
                     }
                 }
             }
         }
     }
-  
+}
+```
+
 You'll notice the quite hefty resource request numbers on the worker containers. This value was derived after a lot of trial and error to find the optimum number that worked for us.
 
 We use EKS and make use of autoscaling, so if we have a large number of test requests, we will automatically scale up the number of available servers to accommodate the load. This also means we will drop down the number of servers when the load reduces, thereby saving a bit of money.
