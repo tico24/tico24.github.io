@@ -122,15 +122,15 @@ data:
     import requests
     import prometheus_client as prom
     from prometheus_client import CollectorRegistry, Gauge, push_to_gateway
-```
-    	...
-``` terminal
-# Push to Prometheus Gateway
-if __name__ == '__main__':
-  registry = CollectorRegistry()
-  g = Gauge('identifying_name_of_my_metric', 'Metric description to help humans', registry=registry)
-  g.set(a_dictionary["metric"])
-  push_to_gateway('servicename.namespace.svc.cluster.local:9091', job='Demo-job', registry=registry)
+
+    ...
+
+    # Push to Prometheus Gateway
+    if __name__ == '__main__':
+      registry = CollectorRegistry()
+      g = Gauge('identifying_name_of_my_metric', 'Metric description to help humans', registry=registry)
+      g.set(a_dictionary["metric"])
+      push_to_gateway('servicename.namespace.svc.cluster.local:9091', job='Demo-job', registry=registry)
 ```
           
 This allows me to add additional python scripts easily by appending the configmap and just adding additional cron jobs as required.
