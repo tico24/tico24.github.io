@@ -1,9 +1,7 @@
 ---
 published: true
 ---
-## So you've gone and set up Kubernetes backups...
-
-Nice one. You've probably used Velero if you haven't used something native to your cloud provider. Velero is a solid tool, admittedly with a few quirks, but it gets the job done and can be relied upon. But how can you be certain the backups worked? You could manually restore every now and then, but that's not very DevOpsy.. plus it's really boring. Here's how I did it.
+So you've gone and set up Kubernetes backups... Nice one. You've probably used Velero if you haven't used something native to your cloud provider. Velero is a solid tool, admittedly with a few quirks, but it gets the job done and can be relied upon. But how can you be certain the backups worked? You could manually restore every now and then, but that's not very DevOpsy.. plus it's really boring. Here's how I did it.
 
 First, I created a namespace called "backup-canary" and deployed a simple deployment containing an nginx pod with a service. This pod has a 1GB Persistent Volume mounted at /usr/share/nginx/html.
 
