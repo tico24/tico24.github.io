@@ -48,14 +48,14 @@ The official docs are [here](https://github.com/prometheus/client_python), but I
 
 The key takeaway was that I needed to use a Gauge in my instance as my values may go up or down. So I just had to add a couple of import lines:
 
-``` terminal
+``` python
 import prometheus_client as prom
 from prometheus_client import CollectorRegistry, Gauge, push_to_gateway
 ```
     
 ... and then push the values (taken from a dictionary) to the gateway:
 
-``` terminal
+``` python
 # Push to Prometheus Gateway
 if __name__ == '__main__':
   registry = CollectorRegistry()
