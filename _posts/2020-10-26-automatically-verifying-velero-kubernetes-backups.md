@@ -22,12 +22,14 @@ I chose to create a Jenkins job to then perform the restore test. Any CI tool sh
 
 Firstly I created a simple kubectl + velero CLI container:
 
-    FROM dtzar/helm-kubectl:3.3.4
-    RUN wget -nv -O /tmp/velero.tar.gz https://github.com/vmware-tanzu/velero/releases/download/v1.5.2/velero-v1.5.2-linux-amd64.tar.gz \
-      && tar -xvf /tmp/velero.tar.gz --directory /tmp/ \
-      && mv /tmp/velero-v1.5.2-linux-amd64/velero/ /usr/local/bin/ \
-      && rm -rf /tmp/velero.*
-      
+``` docker
+FROM dtzar/helm-kubectl:3.3.4
+RUN wget -nv -O /tmp/velero.tar.gz https://github.com/vmware-tanzu/velero/releases/download/v1.5.2/velero-v1.5.2-linux-amd64.tar.gz \
+    && tar -xvf /tmp/velero.tar.gz --directory /tmp/ \
+    && mv /tmp/velero-v1.5.2-linux-amd64/velero/ /usr/local/bin/ \
+    && rm -rf /tmp/velero.*
+```
+
 Then I wrote a simple Jenkins pipline to perform the following steps:
 
 1. Read the contents of the current index.html file and store as a variable.
