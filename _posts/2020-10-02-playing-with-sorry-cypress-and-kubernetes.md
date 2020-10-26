@@ -371,13 +371,13 @@ $ echo -n YOUR-TEXT-TO-ENCODE | base64
 You then insert these into your yaml:
 
 ``` yml
-        apiVersion: v1
-        kind: Secret
-        metadata:
-          name: cypress-s3-secrets
-        data:
-          AWS_SECRET_ACCESS_KEY: VGhpcyBpcyB0aGUgY3J1bWJob2xl
-          AWS_ACCESS_KEY_ID: Tm8gcGVla2luZw==
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cypress-s3-secrets
+data:
+  AWS_SECRET_ACCESS_KEY: VGhpcyBpcyB0aGUgY3J1bWJob2xl
+  AWS_ACCESS_KEY_ID: Tm8gcGVla2luZw==
 ```
 
 And that's it. 
