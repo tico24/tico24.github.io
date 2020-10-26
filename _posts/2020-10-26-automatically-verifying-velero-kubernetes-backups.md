@@ -7,11 +7,11 @@ First, I created a namespace called "backup-canary" and deployed a simple deploy
 
 I then manually wrote a small index.html file inside the volume, containing a known phrase:
 
-``` yml
-// Get the name of the pod
+``` terminal?comments
+# Get the name of the pod
 kubectl -n backup-canary get pods -l=app=backup-canary -o jsonpath='{.items[-1:].metadata.name}'
 
-// Write to the index.html file
+# Write to the index.html file
 kubectl exec -n backup-canary -it ${podName} -- bash -c "echo hello-world > /usr/share/nginx/html/index.html" y
 ```
 If we were to put an ingress on the service (or did magic kubectl port forwarding), we would see a web page with "hello-world" emblazened on it.
