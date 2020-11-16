@@ -5,7 +5,7 @@ For some reason, the official Cypress Docker images are a bit odd. They seem to 
 
 Frustrated by their images, I have knocked together my own. I don't think it is perfect, but it's easier for you to configure yourself to suit your needs, and it's less vulnerability-ridden!
 
-I have run my image through a Trivy scanner and there are 138 medium (and lower) vulnerabilities. 0 of them are fixable. This is down from over 2000 fixable vulnerabilities found on the official Cypress docker images.
+I have run my image through a Trivy scanner and there are 138 medium (and lower) vulnerabilities. 0 of them are fixable. This is down from over 2000 fixable critical vulnerabilities found on the official Cypress docker images.
 
 It is built off of ubuntu 20.04. You can [modify the Dockerfile](https://github.com/tico24/cypress-images) to specify your specific browser and node versions and build it locally (which I'd recommend).
 
