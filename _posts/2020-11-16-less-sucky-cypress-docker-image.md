@@ -1,5 +1,5 @@
 ---
-published: false
+published: true
 ---
 For some reason, the official Cypress Docker images are a bit odd. They seem to be programatically created but there's never any consistency between npm versions and browser versions. They contain repetitions across the layers which cause them to be bulkier than they need to be too. To make things worse, their images contain [critical vulnerabilities that they have no interest in resolving](https://github.com/cypress-io/cypress-docker-images/issues/370).
 
