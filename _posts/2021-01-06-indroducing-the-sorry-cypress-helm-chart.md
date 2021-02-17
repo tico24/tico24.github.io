@@ -37,6 +37,6 @@ $ helm uninstall my-release
 # More words
 By default, the chart deploys everything to Kubernetes (as you'd expect), but there's no persistence, this is so that you can just get up and running as quickly as possible.
 
-By default, he director uses the in-memory executionDriver, and the dummy screenshotsDriver. However, You can choose to enable a persistent mongo database for execution, and you can use S3 for screenshots.
+By default, the director uses the in-memory executionDriver, and the dummy screenshotsDriver. However, You can choose to enable a persistent mongo database for execution, and you can use S3 for screenshots.
 
 Do have a play and if you have any feedback, it's probably best to [open an issue](https://github.com/sorry-cypress/charts/issues).
