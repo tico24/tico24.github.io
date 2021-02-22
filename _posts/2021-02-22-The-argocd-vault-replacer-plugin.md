@@ -26,9 +26,9 @@ In the following example, we will populate a Kubernetes Secret with the key `sec
 apiVersion: v1
 kind: Secret
 metadata:
-	name: argocd-vault-replacer-secret
+  name: argocd-vault-replacer-secret
 data:
-	sample-secret: <vault:path/data/to/your/secret~secretkey|base64>
+  sample-secret: <vault:path/data/to/your/secret~secretkey|base64>
 type: Opaque
 ```
 
