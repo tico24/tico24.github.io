@@ -14,9 +14,7 @@ GitOps is a great thing to have (or at least be aiming for)... ensuring all your
 The painful reality of GitOps is that it becomes all too easy to store secrets in your Git repo alongside your code, combined with the distributed nature of Git, it can become quite easy to lose those secrets to a bad actor, or simply to more people in your organisation who really should have those secrets. One solution is to store your secrets in a secrets manager, but then extracting those secrets in a programatic way can become tricky.
 
 # So how does this work?
-I'm not going to go into super detail here, because the readme is relatively comprehensive already (and if it isn't, PRs are more than welcome!).
-
-Firstly you have to create a Kubernetes serviceAccount, and then give the serviceAccount permission to look at (some of your) secrets in Vault. [Hashicorp's own documentation](https://www.vaultproject.io/docs/auth/kubernetes) covers this well.
+I'm not going to go into super detail here, because the readme is relatively comprehensive already (and if it isn't, PRs are more than welcome!). Firstly you have to create a Kubernetes serviceAccount, and then give the serviceAccount permission to look at (some of your) secrets in Vault. [Hashicorp's own documentation](https://www.vaultproject.io/docs/auth/kubernetes) covers this well.
 
 Then you append that serviceAccount to your installation of ArgoCD and install the plugin (using an init container).
 
@@ -24,7 +22,7 @@ Lastly, you need to modify your yaml (or yml, or Helm, or Kustomize scripts) to 
 
 In the following example, we will populate a Kubernetes Secret with the key `secretkey` on the path `path/to/your/secret`. As we are using a Vault kv2 store, we must include ..`/data/`.. in our path. Kubernetes secrets are base64 encoded, so we add the modifier `|base64` and the plugin handles the rest.
 
-```YAML
+``` yml
 apiVersion: v1
 kind: Secret
 metadata:
