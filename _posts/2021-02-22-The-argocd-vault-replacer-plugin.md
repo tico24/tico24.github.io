@@ -1,5 +1,5 @@
 ---
-published: false
+published: true
 ---
 I recently collaborated on an [Argo CD plugin](https://argoproj.github.io/argo-cd/) called ArgoCD-Vault-Replacer. It allows you to merge your code in Git with your secrets in [Hashicorp Vault](https://www.vaultproject.io/) to deploy into your Kubernetes cluster(s). It supports ‘normal’ Kubernetes yaml (or yml) manifests (of any type) as well as [argocd-managed Kustomize](https://argoproj.github.io/argo-cd/user-guide/kustomize/) and [Helm charts](https://argoproj.github.io/argo-cd/user-guide/helm/).
 
