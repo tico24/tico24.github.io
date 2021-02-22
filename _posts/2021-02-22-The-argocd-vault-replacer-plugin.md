@@ -35,4 +35,4 @@ type: Opaque
 When Argo CD runs, it will pull your yaml from Git, find the secret at the given path and will merge the two together inside your cluster. The result is exactly what you'd expect, a nicely populated Kubernetes Secret.
 
 # Try it out
-If you're already using Argo CD and Vault, then this is really simple to set up and start using. Please do try it out, and issues and comments are more than welcome: https://github.com/crumbhole/argocd-vault-replacer
+If you're already using Argo CD and Vault, then this is really simple to set up and start using. Please do try it out, and issues and comments are more than welcome: [github.com/crumbhole/argocd-vault-replacer](https://github.com/crumbhole/argocd-vault-replacer)
